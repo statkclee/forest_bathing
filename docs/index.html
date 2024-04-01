@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -108,7 +142,16 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#가설" id="toc-가설" class="nav-link active" data-scroll-target="#가설">가설</a></li>
+  <li><a href="#프롬프트" id="toc-프롬프트" class="nav-link" data-scroll-target="#프롬프트">프롬프트</a></li>
+  <li><a href="#논문" id="toc-논문" class="nav-link" data-scroll-target="#논문">논문</a></li>
+  <li><a href="#가설검정-방법론" id="toc-가설검정-방법론" class="nav-link" data-scroll-target="#가설검정-방법론">가설검정 방법론</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -132,9 +175,694 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>산림욕 치유</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 패키지 'fs'는 R 버전 4.3.3에서 작성되었습니다</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dir_filename <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(<span class="st">"data/성인대상, 산림치유 프로그램/"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>paper_title <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(<span class="st">"data/성인대상, 산림치유 프로그램/"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">str_remove</span>(<span class="st">"data/"</span>) <span class="sc">|&gt;</span> <span class="fu">str_remove</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">.pdf"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a> <span class="fu">str_remove</span>(<span class="st">"성인대상, 산림치유 프로그램/"</span>) </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>paper_tbl <span class="ot">&lt;-</span> dir_filename <span class="sc">|&gt;</span> </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a> <span class="fu">enframe</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a> <span class="fu">select</span>(name) <span class="sc">|&gt;</span> </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(논문명 <span class="ot">=</span> <span class="fu">str_remove</span>(name, <span class="st">"data/성인대상, 산림치유 프로그램/"</span>) <span class="sc">|&gt;</span> <span class="fu">str_remove</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">.pdf"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(파일크기 <span class="ot">=</span> <span class="fu">map_dbl</span>(name, <span class="sc">~</span>fs<span class="sc">::</span><span class="fu">file_size</span>(.)) <span class="sc">/</span>(<span class="dv">1024</span><span class="sc">^</span><span class="dv">2</span>) ) <span class="sc">|&gt;</span> </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(파일크기 <span class="ot">=</span> <span class="fu">round</span>(파일크기, <span class="dv">1</span>) ) <span class="sc">|&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a> <span class="fu">select</span>(<span class="sc">-</span>name)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>paper_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a> <span class="fu">arrange</span>(파일크기) <span class="sc">|&gt;</span> </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<div id="zygtubdtie" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zygtubdtie table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#zygtubdtie thead, #zygtubdtie tbody, #zygtubdtie tfoot, #zygtubdtie tr, #zygtubdtie td, #zygtubdtie th {
+  border-style: none;
+}
+
+#zygtubdtie p {
+  margin: 0;
+  padding: 0;
+}
+
+#zygtubdtie .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#zygtubdtie .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#zygtubdtie .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#zygtubdtie .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#zygtubdtie .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#zygtubdtie .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#zygtubdtie .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#zygtubdtie .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#zygtubdtie .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#zygtubdtie .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#zygtubdtie .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#zygtubdtie .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#zygtubdtie .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#zygtubdtie .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#zygtubdtie .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zygtubdtie .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#zygtubdtie .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#zygtubdtie .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#zygtubdtie .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zygtubdtie .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#zygtubdtie .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zygtubdtie .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#zygtubdtie .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zygtubdtie .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zygtubdtie .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zygtubdtie .gt_left {
+  text-align: left;
+}
+
+#zygtubdtie .gt_center {
+  text-align: center;
+}
+
+#zygtubdtie .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#zygtubdtie .gt_font_normal {
+  font-weight: normal;
+}
+
+#zygtubdtie .gt_font_bold {
+  font-weight: bold;
+}
+
+#zygtubdtie .gt_font_italic {
+  font-style: italic;
+}
+
+#zygtubdtie .gt_super {
+  font-size: 65%;
+}
+
+#zygtubdtie .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#zygtubdtie .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#zygtubdtie .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#zygtubdtie .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#zygtubdtie .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#zygtubdtie .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#zygtubdtie .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="논문명" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">논문명</th>
+<th id="파일크기" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">파일크기</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">산림치유 프로그램이 스트레스 및 우울감 완화에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">0.8</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">산림치유프로그램이 감정조절과 주의회복을 통해 삶의 질에 미치는 효과</td>
+<td class="gt_row gt_right" headers="파일크기">0.9</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">산림치유프로그램의 체험요소가 방문객의 감정반응 및 주관적 행복감에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">1.0</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">산림치유프로그램이 직무스트레스 고위험군의 직무스트레스, 우울감 및 기분상태, 자아존중감, 심박변이도에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">1.0</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">'장성치유의 숲’ 산림치유 프로그램의 심리적, 신체적 스트레스 회복효과</td>
+<td class="gt_row gt_right" headers="파일크기">1.1</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">알코올 의존증 완화를 위한 산림치유 프로그램 개발 및 적용 효과에 관한 연구</td>
+<td class="gt_row gt_right" headers="파일크기">1.1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">은퇴자를 위한 산림치유 프로그램 선호도 및 효과분석 연구</td>
+<td class="gt_row gt_right" headers="파일크기">1.2</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">산림치유프로그램이 일부 중년여성의 신체 및 정신적 건강과 생활만족도에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">1.3</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">산림치유 프로그램 경험이 직무스트레스에 노출된 직장인들의 심리적·생리적 변화에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">1.4</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">산림치유가 중년여성의 스트레스와 피로 및 우울에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">1.4</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">암환자 대상 산림치유 프로그램 개발 및 효과 검증</td>
+<td class="gt_row gt_right" headers="파일크기">1.8</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">고령인의 산림치유 참여 활성화를 위한 산림치유 프로그램 적용방향 연구</td>
+<td class="gt_row gt_right" headers="파일크기">2.1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">반려동물의 상실을 경험한 성인 여성을 위한 산림치유 프로그램의 효과 분석</td>
+<td class="gt_row gt_right" headers="파일크기">2.4</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">노인 대상 산림치유 프로그램의 체계적 문헌고찰 및 효과에 관한 연구</td>
+<td class="gt_row gt_right" headers="파일크기">3.0</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">산림치유프로그램이 베이비부머 은퇴자들의 우울과 회복탄력성에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">3.6</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">경도 인지장애 노인을 위한 산림치유 프로그램 개발 및 효과성 검증</td>
+<td class="gt_row gt_right" headers="파일크기">3.8</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">산림치유 프로그램 참여가 생활만족도, 자아존중감, 삶의 질에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">3.9</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">산림치유기반 스트레스 관리 프로그램이 중년여성의 생리·심리적 변화에 미치는 효과</td>
+<td class="gt_row gt_right" headers="파일크기">3.9</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">노인의 인지저하 예방 산림치유 프로그램 적용에 대한 전기생리학적 효과</td>
+<td class="gt_row gt_right" headers="파일크기">4.7</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">산림치유 공간의 온열환경요소가 정서 및 생리적 반응에 미치는 효과</td>
+<td class="gt_row gt_right" headers="파일크기">5.1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">걷기, 경관감상 그리고 향기를 ,이용한 산림치유 프로그램이 독거노인의 치매예방에 미치는 효과 연구</td>
+<td class="gt_row gt_right" headers="파일크기">5.5</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">장기체류 산림치유 프로그램이 인체에 미치는 생리적·심리적 영향</td>
+<td class="gt_row gt_right" headers="파일크기">7.1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">유아의 친사회적 행동, 생명존중인식, 자아효능감 향상을 위한 산림치유프로그램 개발 및 효과 검증</td>
+<td class="gt_row gt_right" headers="파일크기">7.3</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">REBT 집단상담을 적용한 산림치유 프로그램이 중년기 여성의 우울, 자아존중감, 스트레스에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">7.7</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">도시숲에서의 산림치유 프로그램이 노인들의 회복탄력성에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">7.9</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">자기주도형 산림치유프로그램의 효과</td>
+<td class="gt_row gt_right" headers="파일크기">8.4</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">산림치유 프로그램이 대학생의 학업 및 취업스트레스 감소에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">8.5</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">도시숲을 활용한 산림치유 프로그램의 심리적 효과 - 인천대공원 관모산을 중심으로</td>
+<td class="gt_row gt_right" headers="파일크기">10.1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">산림치유 프로그램이 중년기, 노년기 여성의정신건강에 미치는 영향</td>
+<td class="gt_row gt_right" headers="파일크기">10.2</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">산림치유프로그램이 소방공무원의 심리ㆍ생리적 개선에 미치는 효과</td>
+<td class="gt_row gt_right" headers="파일크기">13.2</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">군 복무 부적응 장병을 위한 산림치유프로그램 개발 및 평가</td>
+<td class="gt_row gt_right" headers="파일크기">13.3</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">암생존자의 수면 증진을 위한 도시숲 기반 산림치유 프로그램의 개발 및 효과</td>
+<td class="gt_row gt_right" headers="파일크기">14.3</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="논문명">자연치유 관점에서 손빛수련을 적용한 도시숲 치유프로그램이 건강증진에 미치는 효과</td>
+<td class="gt_row gt_right" headers="파일크기">18.1</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="논문명">MBSR기반 산림치유 프로그램이 도시 성인의 생리적, 심리적 변화에 미치는 효과</td>
+<td class="gt_row gt_right" headers="파일크기">112.3</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<section id="가설" class="level1">
+<h1>가설</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tribble</span>(<span class="sc">~</span><span class="st">"가설"</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">"산림치유 프로그램은 참여자의 스트레스 및 우울감을 완화시키는데 긍정적인 영향을 미칠 것이다."</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  가설                                                                         
+  &lt;chr&gt;                                                                        
+1 산림치유 프로그램은 참여자의 스트레스 및 우울감을 완화시키는데 긍정적인 영향…</code></pre>
+</div>
+</div>
+</section>
+<section id="프롬프트" class="level1">
+<h1>프롬프트</h1>
+<p>다음 사항을 논문에서 추출하여 json 형식으로 출력해줘.</p>
+<ol type="1">
+<li>논문 제목</li>
+<li>논문 제출년월일</li>
+<li>논문 작성자</li>
+<li>논문 발행처</li>
+<li>검증하려는 가설</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>paper_01 <span class="ot">&lt;-</span> <span class="st">'{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="st">  "title": "산림치유 프로그램이 스트레스 및 우울감 완화에 미치는 영향",</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="st">  "publicationDate": "2019년 10월",</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">  "author": "이 성 자",</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">  "publisher": "대전대학교 보건의료대학원",</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">  "hypothesis": "산림치유 프로그램은 참여자의 스트레스 및 우울감을 완화시키는데 긍정적인 영향을 미칠 것이다."</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">}'</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>paper_01_tbl <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(paper_01) </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>paper_01_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a> <span class="fu">as_tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+  title                             publicationDate author  publisher hypothesis
+  &lt;chr&gt;                             &lt;chr&gt;           &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     
+1 산림치유 프로그램이 스트레스 및 … 2019년 10월     이 성 … 대전대학… 산림치유 …</code></pre>
+</div>
+</div>
+</section>
+<section id="논문" class="level1">
+<h1>논문</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>papers_tbl <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/paper.json"</span>) </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>papers_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">as_tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 5
+  title                               submissionDate author publisher hypothesis
+  &lt;chr&gt;                               &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;     
+1 산림치유 프로그램이 스트레스 및 우… 2019년 10월    이 성… 대전대학… 산림치유 …
+2 산림치유프로그램이 감정조절과 주의… 2021년 10월    박 미… 대전대학… 마음챙김… 
+3 산림치유프로그램이 직무스트레스 고… 2015년 8월     이상희 충북대학… 가설 1: … 
+4 산림치유프로그램의 체험요소가 방문… 2023년 6월     최동진 경북대학… 산림치유… 
+5 알코올 의존증 완화를 위한 산림치유… 2023년 6월     오 창… 강원대학… 본 연구는…</code></pre>
+</div>
+</div>
+</section>
+<section id="가설검정-방법론" class="level1">
+<h1>가설검정 방법론</h1>
+<p>가설검정을 위해 사용된 통계적 방법론은 뭐야?</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
