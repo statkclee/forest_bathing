@@ -1,5 +1,5 @@
 ---
-title: "산림욕 치유"
+title: "산림치유"
 editor_options: 
   chunk_output_type: console
 ---

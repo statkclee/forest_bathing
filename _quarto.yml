@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "산림욕"
+  title: "산림치유"
   navbar:
     left:
       - href: index.qmd
